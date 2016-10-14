@@ -26,4 +26,6 @@
 #define BT3_PIN 26
 #define BT4_PIN 28
 
+#define DO_BT_PIN 53
+
 #endif
