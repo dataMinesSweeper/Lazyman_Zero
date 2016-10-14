@@ -20,4 +20,10 @@
 /* the wait time of the Pul */
 #define MOTOR_PUL_WAITTIME 1000
 
+/* the four pin of the four buttons */
+#define BT1_PIN 22
+#define BT2_PIN 24
+#define BT3_PIN 26
+#define BT4_PIN 28
+
 #endif

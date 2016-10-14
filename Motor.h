@@ -2,7 +2,7 @@
 /* author: liuxc 20161012*/
 #ifndef MOTOR_H
 #define MOTOR_H
-#include "Arduino.h"
+
 class Motor
 {
   private:
