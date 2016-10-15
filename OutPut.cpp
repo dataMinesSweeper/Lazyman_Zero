@@ -1,18 +1,18 @@
 #include "Arduino.h"
-#include "Bt.h"
+#include "OutPut.h"
 
-Bt::Bt(int pinNum)
+OutPut::OutPut(int pinNum)
 {
 	this->pinNum = pinNum;
 	pinMode(pinNum, OUTPUT);
 }
 
-void Bt::enable()
+void OutPut::enable()
 {
 	digitalWrite(pinNum, HIGH);
 }
 
-void Bt::disable()
+void OutPut::disable()
 {
 	digitalWrite(pinNum, LOW);
 }

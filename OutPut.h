@@ -1,12 +1,12 @@
-#ifndef BT_H
-#define BT_H
+#ifndef OUTPUT_H
+#define OUTPUT_H
 
-class Bt
+class OutPut
 {
 	private:
 		int pinNum;
 	public:
-		Bt(int pinNum);
+		OutPut(int pinNum);
 		void enable();
 		void disable();
 };
