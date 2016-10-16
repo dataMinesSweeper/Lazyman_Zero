@@ -33,16 +33,16 @@
 
 /* the button pin defined of the teaching */
 #define RESET_BT_PIN 22
-#define MOTOR1L_BT_PIN 22
-#define MOTOR1R_BT_PIN 24
-#define MOTOR2L_BT_PIN 26
-#define MOTOR2R_BT_PIN 28
-#define MOTOR3U_BT_PIN 30
-#define MOTOR3D_BT_PIN 32
-#define DELAY_BT_PIN 34
-#define BT1_PIN 36
-#define BT2_PIN 38
-#define BT3_PIN 40
-#define BT4_PIN 42
+#define MOTOR1L_BT_PIN 24
+#define MOTOR1R_BT_PIN 26
+#define MOTOR2L_BT_PIN 28
+#define MOTOR2R_BT_PIN 30
+#define MOTOR3U_BT_PIN 32
+#define MOTOR3D_BT_PIN 34
+#define DELAY_BT_PIN 36
+#define BT1_PIN 38
+#define BT2_PIN 40
+#define BT3_PIN 42
+#define BT4_PIN 44
 
 #endif

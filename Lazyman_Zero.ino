@@ -1,5 +1,6 @@
-#include "Init.h"
-
+#include "Envi.h"
+#include "Function.h"
+Envi envi;
 void setup() {
   // put your setup code here, to run once:
   
@@ -7,7 +8,19 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  motor1.enable();
-  motor1.stepByNum(600);
-  motor1.disable();
+  //read the status of reset bt
+  if (envi.resetBt->isPressed())
+  {
+    //do the programm of reset
+    resetProgramm(envi);
+  }
+  else
+  {
+    //read the status of doBt
+    if (envi.doBt->isPressed())
+    {
+      //do the programm of do
+      doProgramm(envi);
+    }
+  }
 }
