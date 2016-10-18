@@ -8,11 +8,13 @@ unsigned long computeInterMillis(unsigned long start, unsigned long end);
 void writeDelayCommand(File* file, unsigned long ms);
 void writeOutputChangeCommad(File* file, int bt1State, int bt2State, int bt3State, int bt4State);
 void writeMotorRunCommand(File * file, int motor1En, int motor2En, int motor3En, int num);
+boolean motorControBtIsDelay(Envi envi, int motor1lState, int motor1rState, int motor2lState, int motor2rState, int motor3uState, int motor3dState);
 
 void resetProgramm(Envi envi)
 {
   //open the programm file to write
-  SD.begin();
+  SD.begin(4);
+  SD.remove("programm.txt");
   File programmFile = SD.open("programm.txt", FILE_WRITE);
   boolean Bt1State = false;
   boolean Bt2State = false;
@@ -63,8 +65,15 @@ void resetProgramm(Envi envi)
 			int motor1En = motor1lState * MOTOR_L_BASE + motor1rState * MOTOR_R_BASE;
 			int motor2En = motor2lState * MOTOR_L_BASE + motor2rState * MOTOR_R_BASE;
 			int motor3En = motor3uState * MOTOR_U_BASE + motor3dState * MOTOR_D_BASE;
-			writeMotorRunCommand(&programmFile, motor1En, motor2En, motor3En, 1);
 			motorRun(envi, motor1En, motor2En, motor3En, 1);
+			int motorRunNum = 1;
+			//等待直到状态改变
+			while(motorControBtIsDelay(envi, motor1lState, motor1rState, motor2lState, motor2rState, motor3uState, motor3dState))
+			{
+				motorRunNum++;
+			}
+			writeMotorRunCommand(&programmFile, motor1En, motor2En, motor3En, motorRunNum);
+			
 		}
 		
 	}
@@ -76,7 +85,7 @@ void resetProgramm(Envi envi)
 void doProgramm(Envi envi)
 {
   //open the prigramm file to read
-  SD.begin();
+  SD.begin(4);
   File programmFile = SD.open("programm.txt");
   while(programmFile.available())
   {
@@ -212,5 +221,28 @@ void writeMotorRunCommand(File* file, int motor1En, int motor2En, int motor3En, 
 	file->write(motor1En);
 	file->write(motor2En);
 	file->write(motor3En);
-	file->write(num);
+  int i = 0;
+  for (; i<num/MAX_RECORD_NUM; i++)
+  {
+    file->write(MAX_RECORD_NUM);  
+  }
+  file->write(num%MAX_RECORD_NUM);
+}
+
+boolean motorControBtIsDelay(Envi envi,int motor1lState, int motor1rState, int motor2lState, int motor2rState, int motor3uState, int motor3dState)
+{
+	boolean motor1lState2 = envi.motor1lBt->isPressed();
+	boolean motor1rState2 = envi.motor1rBt->isPressed();
+	boolean motor2lState2 = envi.motor2lBt->isPressed();
+	boolean motor2rState2 = envi.motor2rBt->isPressed();
+	boolean motor3uState2 = envi.motor3uBt->isPressed();
+	boolean motor3dState2 = envi.motor3dBt->isPressed();
+	if(	motor1lState2 == motor1lState &&
+		motor1rState2 == motor1rState &&
+		motor2lState2 == motor2lState &&
+		motor2rState2 == motor2rState &&
+		motor3uState2 == motor3uState &&
+		motor3dState2 == motor3dState )
+	return true;
+	return false;
 }

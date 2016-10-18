@@ -3,7 +3,7 @@
 Envi envi;
 void setup() {
   // put your setup code here, to run once:
-  
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -12,6 +12,8 @@ void loop() {
   if (envi.resetBt->isPressed())
   {
     //do the programm of reset
+    Serial.println("reset Bt is Pressed");
+    delay(2000);
     resetProgramm(envi);
   }
   else
@@ -20,6 +22,8 @@ void loop() {
     if (envi.doBt->isPressed())
     {
       //do the programm of do
+      Serial.println("do Bt is Pressed");
+      delay(2000);
       doProgramm(envi);
     }
   }
