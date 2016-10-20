@@ -13,6 +13,7 @@ void loop() {
   {
     //do the programm of reset
     Serial.println("reset Bt is Pressed");
+    delay(20000);
     envi.enableMotors();
     resetProgramm(envi);
     envi.disableMotors();
