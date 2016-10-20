@@ -42,3 +42,10 @@ Envi::disableMotors()
   motor2->disable();
   motor3->disable();
 }
+
+Envi::resetAllMotors()
+{
+  motor1->reset();
+  motor2->reset();
+  motor3->reset();
+}
