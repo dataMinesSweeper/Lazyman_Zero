@@ -1,3 +1,5 @@
+#include <SPI.h>
+#include <SD.h>
 #include "Envi.h"
 #include "Function.h"
 Envi envi;
