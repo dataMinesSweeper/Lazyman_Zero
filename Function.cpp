@@ -81,6 +81,7 @@ void resetProgramm(Envi envi)
 	
   }
   programmFile.close();
+  envi.resetAllMotors();
 }
 
 void doProgramm(Envi envi)
@@ -125,6 +126,7 @@ void doProgramm(Envi envi)
 	}
   }
   programmFile.close();
+  envi.resetAllMotors();
 }
 
 void changeOutputState(Envi envi, int bt1State, int bt2State, int bt3State, int bt4State)
