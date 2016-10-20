@@ -13,7 +13,6 @@ void loop() {
   {
     //do the programm of reset
     Serial.println("reset Bt is Pressed");
-    delay(2000);
     resetProgramm(envi);
   }
   else
@@ -23,7 +22,6 @@ void loop() {
     {
       //do the programm of do
       Serial.println("do Bt is Pressed");
-      delay(2000);
       doProgramm(envi);
     }
   }
