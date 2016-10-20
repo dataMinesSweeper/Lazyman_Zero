@@ -34,7 +34,7 @@
 #define OUTPUT3_PIN 45
 #define OUTPUT4_PIN 47
 
-#define DO_BT_PIN 53
+#define DO_BT_PIN 49
 
 /* the button pin defined of the teaching */
 #define RESET_BT_PIN 22
