@@ -13,7 +13,9 @@ void loop() {
   {
     //do the programm of reset
     Serial.println("reset Bt is Pressed");
+    envi.enableMotors();
     resetProgramm(envi);
+    envi.disableMotors();
   }
   else
   {
@@ -22,7 +24,9 @@ void loop() {
     {
       //do the programm of do
       Serial.println("do Bt is Pressed");
+      envi.enableMotors();
       doProgramm(envi);
+      envi.disableMotors();
     }
   }
 }
