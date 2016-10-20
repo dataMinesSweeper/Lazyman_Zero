@@ -13,7 +13,6 @@ boolean motorControBtIsDelay(Envi envi, int motor1lState, int motor1rState, int 
 void resetProgramm(Envi envi)
 {
   //open the programm file to write
-  SD.begin(4);
   SD.remove("programm.txt");
   File programmFile = SD.open("programm.txt", FILE_WRITE);
   boolean Bt1State = false;
@@ -87,7 +86,6 @@ void resetProgramm(Envi envi)
 void doProgramm(Envi envi)
 {
   //open the prigramm file to read
-  SD.begin(4);
   File programmFile = SD.open("programm.txt");
   while(programmFile.available())
   {
