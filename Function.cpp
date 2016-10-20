@@ -71,6 +71,7 @@ void resetProgramm(Envi envi)
 			while(motorControBtIsDelay(envi, motor1lState, motor1rState, motor2lState, motor2rState, motor3uState, motor3dState))
 			{
 				motorRunNum++;
+				motorRun(envi, motor1En, motor2En, motor3En, 1);
 			}
 			writeMotorRunCommand(&programmFile, motor1En, motor2En, motor3En, motorRunNum);
 			
@@ -138,28 +139,19 @@ void motorRun(Envi envi, int motor1En, int motor2En, int motor3En, int num)
 {
 	if (0 != motor1En && 0 == motor2En && 0 == motor3En) 
 	{
-		envi.motor1->enable();
 		envi.motor1->stepByNum(num * motor1En);
-		envi.motor1->disable();
 		return;
 	}
 	if (0 == motor1En && 0 != motor2En && 0 == motor3En) 
 	{
-		envi.motor2->enable();
 		envi.motor2->stepByNum(num * motor2En);
-		envi.motor2->disable();
 		return;
 	}
 	if (0 == motor1En && 0 == motor2En && 0 != motor3En) 
 	{
-		envi.motor3->enable();
 		envi.motor3->stepByNum(num * motor3En);
-		envi.motor3->disable();
 		return;
 	}
-	if(motor1En) envi.motor1->enable();
-	if(motor2En) envi.motor2->enable();
-	if(motor3En) envi.motor3->enable();
 	
 	int i = 0;
 	for(; i<num; i++)
@@ -168,10 +160,6 @@ void motorRun(Envi envi, int motor1En, int motor2En, int motor3En, int num)
 		if(motor2En) envi.motor2->stepByNum(motor2En);
 		if(motor3En) envi.motor3->stepByNum(motor3En);
 	}
-	
-	if(motor1En) envi.motor1->disable();
-	if(motor2En) envi.motor2->disable();
-	if(motor3En) envi.motor3->disable();
 }
 
 boolean allSixBtIsNull(Envi envi)
