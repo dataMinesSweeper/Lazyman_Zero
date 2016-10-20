@@ -29,21 +29,21 @@ Envi::Envi()
   bt4Bt = new InputBt( BT4_PIN );
 }
 
-Envi::enableMotors()
+void Envi::enableMotors()
 {
   motor1->enable();
   motor2->enable();
   motor3->enable();
 }
 
-Envi::disableMotors()
+void Envi::disableMotors()
 {
   motor1->disable();
   motor2->disable();
   motor3->disable();
 }
 
-Envi::resetAllMotors()
+void Envi::resetAllMotors()
 {
   motor1->reset();
   motor2->reset();
