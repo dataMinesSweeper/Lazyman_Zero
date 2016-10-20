@@ -39,6 +39,7 @@ class Envi
   
     void enableMotors();
     void disableMotors();
+    void resetAllMotors();
 };
 
 #endif
