@@ -29,3 +29,16 @@ Envi::Envi()
   bt4Bt = new InputBt( BT4_PIN );
 }
 
+Envi::enableMotors()
+{
+  motor1->enable();
+  motor2->enable();
+  motor3->enable();
+}
+
+Envi::disableMotors()
+{
+  motor1->disable();
+  motor2->disable();
+  motor3->disable();
+}
