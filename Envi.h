@@ -34,7 +34,11 @@ class Envi
     InputBt* bt2Bt;
     InputBt* bt3Bt;
     InputBt* bt4Bt;
+  
     Envi();
+  
+    void enableMotors();
+    void disableMotors();
 };
 
 #endif
