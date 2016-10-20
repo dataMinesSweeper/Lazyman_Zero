@@ -3,6 +3,7 @@
 Envi envi;
 void setup() {
   // put your setup code here, to run once:
+  SD.begin(4);
   Serial.begin(9600);
 }
 
