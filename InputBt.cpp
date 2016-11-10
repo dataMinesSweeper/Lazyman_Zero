@@ -1,16 +1,22 @@
 #include "InputBt.h"
 
-InputBt::InputBt(int pinNum)
+InputBt::InputBt(int pinNum, int delayTime)
 {
 	this->pinNum = pinNum;
-	pinMode( pinNum, INPUT);
+  this->delayTime = delayTime;
+	//pinMode( pinNum, INPUT);
 }
 
 boolean InputBt::isPressed()
 {
-	if (HIGH == digitalRead(pinNum)) 
+	if (1000 < analogRead(pinNum)) 
 	{
-		return true;
+    delay(delayTime);
+    if (1000 < analogRead(pinNum)) 
+    {
+      return true;
+    }
+		return false;
 	}
 	else
 	{

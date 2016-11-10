@@ -6,9 +6,9 @@ class InputBt
 {
 	private:
 		int pinNum;
-	
+	  int delayTime;
 	public:
-		InputBt(int pinNum);
+		InputBt(int pinNum, int delayTime);
 		boolean isPressed();
 };
 

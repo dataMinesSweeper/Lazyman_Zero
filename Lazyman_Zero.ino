@@ -6,17 +6,15 @@ Envi envi;
 void setup() {
   // put your setup code here, to run once:
   SD.begin(4);
-  Serial.begin(9600);
+  //Serial.begin(9600);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //read the status of reset bt
+  //read the status of reset bt 
   if (envi.resetBt->isPressed())
   {
     //do the programm of reset
-    Serial.println("reset Bt is Pressed");
-    delay(20000);
     envi.enableMotors();
     resetProgramm(envi);
     envi.disableMotors();
@@ -27,10 +25,11 @@ void loop() {
     if (envi.doBt->isPressed())
     {
       //do the programm of do
-      Serial.println("do Bt is Pressed");
       envi.enableMotors();
+      delay(1000);
       doProgramm(envi);
       envi.disableMotors();
+      delay(1000);
     }
   }
 }

@@ -58,22 +58,21 @@ void resetProgramm(Envi envi)
 		boolean motor2rState = envi.motor2rBt->isPressed();
 		boolean motor3uState = envi.motor3uBt->isPressed();
 		boolean motor3dState = envi.motor3dBt->isPressed();
-		
+
 		if(motor1lState || motor1rState || motor2lState || motor2rState || motor3uState || motor3dState)
 		{
 			int motor1En = motor1lState * MOTOR_L_BASE + motor1rState * MOTOR_R_BASE;
 			int motor2En = motor2lState * MOTOR_L_BASE + motor2rState * MOTOR_R_BASE;
 			int motor3En = motor3uState * MOTOR_U_BASE + motor3dState * MOTOR_D_BASE;
-			motorRun(envi, motor1En, motor2En, motor3En, 1);
-			int motorRunNum = 1;
+			motorRun(envi, motor1En, motor2En, motor3En, 100);
+			int motorRunNum = 100;
 			//等待直到状态改变
 			while(motorControBtIsDelay(envi, motor1lState, motor1rState, motor2lState, motor2rState, motor3uState, motor3dState))
 			{
-				motorRunNum++;
-				motorRun(envi, motor1En, motor2En, motor3En, 1);
+				motorRunNum += 100;
+				motorRun(envi, motor1En, motor2En, motor3En, 100);
 			}
 			writeMotorRunCommand(&programmFile, motor1En, motor2En, motor3En, motorRunNum);
-			
 		}
 		
 	}
@@ -93,12 +92,15 @@ void doProgramm(Envi envi)
 	//motor run command
 	if( 0 == commandFlag )
 	{
-		int motor1En = programmFile.read();
-		int motor2En = programmFile.read();
-		int motor3En = programmFile.read();
+		int motor1En = programmFile.read() ;
+    motor1En = (motor1En == 255) ? -1 : motor1En;
+		int motor2En = programmFile.read() ;
+    motor2En = (motor2En == 255) ? -1 : motor2En;
+		int motor3En = programmFile.read() ;
+    motor3En = (motor3En == 255) ? -1 : motor3En;
 		int curNum = programmFile.read();
 		int totalNum = curNum;
-		while(curNum == 255)
+		while(curNum == MAX_RECORD_NUM)
 		{
 			curNum = programmFile.read();
 			totalNum += curNum;
@@ -115,7 +117,7 @@ void doProgramm(Envi envi)
 	{
 		int curNum = programmFile.read();
 		int totalNum = curNum;
-		while(curNum == 255)
+		while(curNum == MAX_RECORD_NUM)
 		{
 			curNum = programmFile.read();
 			totalNum += curNum;
@@ -124,6 +126,7 @@ void doProgramm(Envi envi)
 	}
   }
   programmFile.close();
+  Serial.println("start reset");
   envi.resetAllMotors();
 }
 
