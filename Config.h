@@ -337,6 +337,7 @@ int getMaxDotCurPos(int ope, int curI, int curJ) {
     if (curResult != 5) {curResult -= peng1; curResult -= peng2;}
     if (curResult > result) result = curResult;
     //if (4 == result) return 10;
+    if (2 == result) return 40;
     if (3 == result) return 60;
     if (4 == result) return 1000;
     if (5 == result) return 999999;
