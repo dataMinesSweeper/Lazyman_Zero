@@ -71,7 +71,7 @@ void getGreatestPosition();
 int maxArray[2];
 int map[MAP_SIZE][MAP_SIZE];
 int curOperator = 0;
-int getDotDir(int ope, int changeI, int chageJ, int curI, int curJ);
+int getDotDir(int ope, int changeI, int chageJ, int curI, int curJ, bool* pQiang);
 int getMaxDotCurPos(int ope, int curI, int curJ);
 int computeBestPos(int ope, int* pI, int* pJ);
 int getMaxDot(int ope);
@@ -101,7 +101,7 @@ bool gameStart() {
     //初始化全局
     init();
     //result代表有没有定胜负
-    map[8][8] = 1;
+    map[MAP_SIZE/2][MAP_SIZE/2] = 1;
     showMap(map);
     curOperator = (curOperator + 1) % 2;
 
@@ -287,18 +287,26 @@ void showMap2(int curMap[MAP_SIZE][MAP_SIZE]) {
     }
 }
 
-int getDotDir(int ope, int changeI, int chageJ, int curI, int curJ) {
+int getDotDir(int ope, int changeI, int chageJ, int curI, int curJ, bool* pQiang) {
     int curNum = 0;
     int addNum = 0;
+    *pQiang = false;
     curI += changeI;
     curJ += chageJ;
+    if (curI < 1 || curJ < 1) {
+        return 0;
+    }
+    if (curI == MAP_SIZE || curJ == MAP_SIZE) {
+        return 0;
+    }
+
     for(; curNum < 7; curNum++) {
         if (curI < 1 || curJ < 1) {
-            addNum--;
+            *pQiang = true;
             break;
         }
         if (curI == MAP_SIZE || curJ == MAP_SIZE) {
-            addNum--;
+            *pQiang = true;
             break;
         }
         if (map[curI][curJ] == ope) addNum++;
@@ -307,20 +315,26 @@ int getDotDir(int ope, int changeI, int chageJ, int curI, int curJ) {
         curJ += chageJ;
     }
 
-    if (map[curI][curJ] == (ope%2 + 1)) addNum--;
+    if (map[curI][curJ] == (ope%2 + 1)) *pQiang = true;
     return addNum;
 }
 
 int getMaxDotCurPos(int ope, int curI, int curJ) {
     int i = curI;
     int j = curJ;
+    bool peng1;
+    bool peng2;
     if (map[curI][curJ] != ope) return 0;
-    int result = getDotDir(ope,-1,-1,i,j) + getDotDir(ope,1,1,i,j) + 1;
-    int curResult = getDotDir(ope,-1,0,i,j) + getDotDir(ope,1,0,i,j) + 1;
+    int result = getDotDir(ope,-1,-1,i,j,&peng1) + getDotDir(ope,1,1,i,j,&peng2) + 1;
+    if (result != 5) {result -= peng1; result -= peng2;}
+    int curResult = getDotDir(ope,-1,0,i,j,&peng1) + getDotDir(ope,1,0,i,j,&peng2) + 1;
+    if (curResult != 5) {curResult -= peng1; curResult -= peng2;}
     if (curResult > result) result = curResult;
-    curResult = getDotDir(ope,-1,1,i,j) + getDotDir(ope,1,-1,i,j) + 1;
+    curResult = getDotDir(ope,-1,1,i,j,&peng1) + getDotDir(ope,1,-1,i,j,&peng2) + 1;
+    if (curResult != 5) {curResult -= peng1; curResult -= peng2;}
     if (curResult > result) result = curResult;
-    curResult = getDotDir(ope,0,-1,i,j) + getDotDir(ope,0,1,i,j) + 1;
+    curResult = getDotDir(ope,0,-1,i,j,&peng1) + getDotDir(ope,0,1,i,j,&peng2) + 1;
+    if (curResult != 5) {curResult -= peng1; curResult -= peng2;}
     if (curResult > result) result = curResult;
     //if (4 == result) return 10;
     if (3 == result) return 60;
@@ -331,6 +345,7 @@ int getMaxDotCurPos(int ope, int curI, int curJ) {
 
 int computeBestPos(int ope, int* pI, int* pJ) {
     int curMaxDot = 0;
+    int otherShouyi = 0;
     int curI = 1;
     int curJ = 1;
     int i,j;
@@ -339,10 +354,24 @@ int computeBestPos(int ope, int* pI, int* pJ) {
             if (map[i][j] != 0) continue;
             map[i][j] = ope;
             int curDot = getMaxDot(ope);
+            if (curDot == curMaxDot) {
+                //计算在这点对方的收益
+                map[i][j] = (ope%2) + 1;
+                int curOtherShouyi = getMaxDot((ope%2) + 1);
+                map[i][j] = ope;
+                if (curOtherShouyi > otherShouyi) {
+                    curI = i;
+                    curJ = j;
+                    otherShouyi = curOtherShouyi;
+                }
+            }
             if (curDot > curMaxDot) {
                 curMaxDot = curDot;
                 curI = i;
                 curJ = j;
+                map[i][j] = (ope%2) + 1;
+                otherShouyi = getMaxDot((ope%2) + 1);
+                map[i][j] = ope;
             }
             map[i][j] = 0;
         }
@@ -362,5 +391,4 @@ int getMaxDot(int ope) {
     }
     return maxDot;
 }
-
 
