@@ -51,3 +51,316 @@
 #define BT4_PIN 12
 
 #endif
+
+#include <stdio.h>
+#include <stdlib.h>
+#define MAP_SIZE 16
+#define bool int
+#define false 0
+#define true 1
+void initMap(int pMap[MAP_SIZE][MAP_SIZE]);
+void showMap(int curMap[MAP_SIZE][MAP_SIZE]);
+void showMap2(int curMap[MAP_SIZE][MAP_SIZE]);
+bool gameStart(void);
+bool everyStep();
+bool isWined();
+void init() ;
+bool checkWinDir(int changeI, int chageJ, int curI, int curJ);
+void getGreatestPosition();
+
+int maxArray[2];
+int map[MAP_SIZE][MAP_SIZE];
+int curOperator = 0;
+int getDotDir(int ope, int changeI, int chageJ, int curI, int curJ);
+int getMaxDotCurPos(int ope, int curI, int curJ);
+int computeBestPos(int ope, int* pI, int* pJ);
+int getMaxDot(int ope);
+
+int main()
+{
+    //游戏主逻辑
+    while(gameStart()) ;
+    /*int secMap[MAP_SIZE][MAP_SIZE];
+    initMap(secMap);
+    map[5][8] = 1;
+    map[4][8] = 1;
+    map[5][7] = 1;
+    map[5][9] = 1;
+    int i,j;
+    for(i = 1; i<MAP_SIZE; i++) {
+        for(j = 1; j<MAP_SIZE; j++) {
+            secMap[i][j] = getMaxDotCurPos(1, i, j);
+        }
+    }
+    showMap2(secMap); */
+    return 0;
+}
+
+//一次游戏开始
+bool gameStart() {
+    //初始化全局
+    init();
+    //result代表有没有定胜负
+    map[8][8] = 1;
+    showMap(map);
+    curOperator = (curOperator + 1) % 2;
+
+    bool result = false;
+    while(false == result) {
+        //当前旗手下子
+        if (curOperator == 1)  result = everyStep();
+        else computeEveryStep();
+        //更换棋手
+        curOperator = (curOperator + 1) % 2;
+        maxArray[0] = getMaxDot(1);
+        maxArray[2] = getMaxDot(2);
+
+    }
+    printf("不服来战？？？y/n");
+    char contiFlag;
+    scanf("%c", &contiFlag);
+    scanf("%c", &contiFlag);
+    if ('y' == contiFlag) return true;
+    return  false;
+}
+
+//当前棋手下棋
+bool everyStep() {
+    int row,col;
+    while(true) {
+         printf("旗手%d:请输入恒纵坐标：————",curOperator + 1);
+         if(0 == scanf("%d %d",&row,&col)) {
+            printf("输入不合法！！");
+            continue;
+         }
+         if (row > 15 || col > 15) {
+            printf("超了");
+            continue;
+         }
+         if (0 == map[row][col]) break;
+         else printf("坑已经被占了！！！！！\n");
+    }
+
+    //改变地图
+    map[row][col] = curOperator + 1;
+    showMap(map);
+    //判断当前选手是否获胜
+    if(isWined()) {
+        printf("选手%d已经获胜，你才是新一代的棋王，王中王啦啦啦！！",curOperator + 1);
+        return true;
+    }
+    return false;
+}
+
+bool computeEveryStep() {
+    int row,col;
+    int antiDot = computeBestPos((curOperator + 1) %2 + 1, &row, &col) - maxArray[(curOperator + 1) %2];
+    int row2,col2;
+    int mineDot = computeBestPos(curOperator+1, &row2, &col2) - maxArray[curOperator];
+    printf("antiDot:%d   mineDot:%d\n",antiDot,mineDot);
+    antiDot -= 100;
+    if (mineDot > antiDot || mineDot > 5000) {
+        row = row2;
+        col = col2;
+    }
+    //改变地图
+    map[row][col] = curOperator  + 1;
+    showMap(map);
+    printf("电脑下的位置是%d %d\n",row,col);
+
+    /*
+    map[row][col] = (curOperator + 1) %2 + 1;
+    int secMap[MAP_SIZE][MAP_SIZE];
+    initMap(secMap);
+    int i,j;
+    for(i = 1; i<MAP_SIZE; i++) {
+        for(j = 1; j<MAP_SIZE; j++) {
+            secMap[i][j] = getMaxDotCurPos(1, i, j);
+        }
+    }
+    showMap2(secMap);
+    map[row][col] = curOperator  + 1;
+*/
+    //判断当前选手是否获胜
+    if(isWined()) {
+        printf("选手%d已经获胜，你才是新一代的棋王，王中王啦啦啦！！",curOperator + 1);
+        return true;
+    }
+    return false;
+}
+
+//检查当前旗手是否获胜
+bool isWined() {
+    //遍历数组判断当前选手有没有赢
+    int curFlag = curOperator + 1;
+    int i,j;
+    for (i = 0; i<MAP_SIZE; i++) {
+        for (j = 0; j<MAP_SIZE; j++) {
+            //如果当前的值不是现在选手continue
+            if (curFlag != map[i][j]) continue;
+            bool curResult = false;
+            //左上判断
+            curResult |= checkWinDir(-1,-1,i,j);
+            //上判断
+            curResult |= checkWinDir(-1,0,i,j);
+            //右上判断
+            curResult |= checkWinDir(-1,1,i,j);
+            //左判断
+            curResult |= checkWinDir(0,-1,i,j);
+            //右判断
+            curResult |= checkWinDir(0,1,i,j);
+            //左下判断
+            curResult |= checkWinDir(1,-1,i,j);
+            //下判断
+            curResult |= checkWinDir(1,0,i,j);
+            //右下判断
+            curResult |= checkWinDir(1,1,i,j);
+            if(curResult) return true;
+        }
+    }
+    return false;
+}
+
+//检查在某个方向上是否获胜
+bool checkWinDir(int changeI, int chageJ, int curI, int curJ) {
+    bool curResult = false;
+    int curNum = 0;
+    int addNum = 0;
+    for(; curNum < 5; curNum++) {
+        if (curI < 1 || curJ < 1) break;
+        if (map[curI][curJ] == (curOperator + 1)) addNum++;
+        curI += changeI;
+        curJ += chageJ;
+    }
+    if ( 5 == addNum ) return true;
+    return curResult;
+}
+
+
+void init() {
+    //初始化地图
+    initMap(map);
+    showMap(map);
+    //初始化当前选手
+    curOperator = 0;
+}
+
+
+void initMap(int pMap[MAP_SIZE][MAP_SIZE]) {
+    int i,j;
+    for (i = 0; i<MAP_SIZE; i++) {
+        for (j = 0; j<MAP_SIZE; j++) {
+            if (i==0 || j==0) {
+                pMap[i][j] = i + j;
+            } else {
+                pMap[i][j] = 0;
+            }
+        }
+    }
+}
+
+//打印地图到界面
+void showMap(int curMap[MAP_SIZE][MAP_SIZE]) {
+    int i,j;
+    for (i=0;i<MAP_SIZE;i++){
+        for (j=0;j<MAP_SIZE;j++) {
+            if (i==0 || j==0) {
+                printf("%2d ",curMap[i][j]);
+            }
+            else {
+                if (0 == curMap[i][j]) printf(" . ");
+                else if (1 == curMap[i][j]) printf(" O ");
+                else (printf(" X "));
+            }
+        }
+        printf("\n");
+    }
+}
+
+void showMap2(int curMap[MAP_SIZE][MAP_SIZE]) {
+    int i,j;
+    for (i=0;i<MAP_SIZE;i++){
+        for (j=0;j<MAP_SIZE;j++) {
+                printf("%2d ",curMap[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int getDotDir(int ope, int changeI, int chageJ, int curI, int curJ) {
+    int curNum = 0;
+    int addNum = 0;
+    curI += changeI;
+    curJ += chageJ;
+    for(; curNum < 7; curNum++) {
+        if (curI < 1 || curJ < 1) {
+            addNum--;
+            break;
+        }
+        if (curI == MAP_SIZE || curJ == MAP_SIZE) {
+            addNum--;
+            break;
+        }
+        if (map[curI][curJ] == ope) addNum++;
+        else break;
+        curI += changeI;
+        curJ += chageJ;
+    }
+
+    if (map[curI][curJ] == (ope%2 + 1)) addNum--;
+    return addNum;
+}
+
+int getMaxDotCurPos(int ope, int curI, int curJ) {
+    int i = curI;
+    int j = curJ;
+    if (map[curI][curJ] != ope) return 0;
+    int result = getDotDir(ope,-1,-1,i,j) + getDotDir(ope,1,1,i,j) + 1;
+    int curResult = getDotDir(ope,-1,0,i,j) + getDotDir(ope,1,0,i,j) + 1;
+    if (curResult > result) result = curResult;
+    curResult = getDotDir(ope,-1,1,i,j) + getDotDir(ope,1,-1,i,j) + 1;
+    if (curResult > result) result = curResult;
+    curResult = getDotDir(ope,0,-1,i,j) + getDotDir(ope,0,1,i,j) + 1;
+    if (curResult > result) result = curResult;
+    //if (4 == result) return 10;
+    if (3 == result) return 60;
+    if (4 == result) return 1000;
+    if (5 == result) return 999999;
+    return result;
+}
+
+int computeBestPos(int ope, int* pI, int* pJ) {
+    int curMaxDot = 0;
+    int curI = 1;
+    int curJ = 1;
+    int i,j;
+    for (i=1;i<MAP_SIZE;i++){
+        for (j=1;j<MAP_SIZE;j++) {
+            if (map[i][j] != 0) continue;
+            map[i][j] = ope;
+            int curDot = getMaxDot(ope);
+            if (curDot > curMaxDot) {
+                curMaxDot = curDot;
+                curI = i;
+                curJ = j;
+            }
+            map[i][j] = 0;
+        }
+    }
+    *pI = curI;
+    *pJ = curJ;
+    return curMaxDot;
+}
+
+int getMaxDot(int ope) {
+    int maxDot = 0;
+    int i,j;
+    for (i=1;i<MAP_SIZE;i++){
+        for (j=1;j<MAP_SIZE;j++) {
+            maxDot += getMaxDotCurPos(ope, i, j);
+        }
+    }
+    return maxDot;
+}
+
+
