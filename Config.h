@@ -33,7 +33,7 @@
 #define OUTPUT2_PIN 5
 #define OUTPUT3_PIN 6
 #define OUTPUT4_PIN 7
-
+liuxc
 #define DO_BT_PIN 0
 
 /* the button pin defined of the teaching */
